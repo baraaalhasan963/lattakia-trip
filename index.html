@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة رحلة اللاذقية</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(160deg, #0b3d5c 0%, #1b6ca8 45%, #38b6d8 100%); min-height: 100vh; padding: 20px 16px; }
+        .container { max-width: 720px; margin: 0 auto; }
+
+        h1 { text-align: center; color: #fff; font-size: 1.7rem; margin-bottom: 6px; text-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+        .subtitle { text-align: center; color: rgba(255,255,255,0.85); font-size: 0.85rem; margin-bottom: 20px; }
+
+        .card { background: rgba(255,255,255,0.96); border-radius: 14px; padding: 18px; box-shadow: 0 6px 24px rgba(0,0,0,0.2); margin-bottom: 16px; }
+
+        .progress-wrap { margin-bottom: 18px; }
+        .progress-top { display: flex; justify-content: space-between; color: #fff; font-size: 0.9rem; margin-bottom: 6px; }
+        .progress-bar { height: 12px; background: rgba(255,255,255,0.3); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #28a745, #8eda3a); border-radius: 10px; transition: width 0.4s ease; }
+
+        .input-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+        .input-row input[type="text"] { flex: 1; min-width: 180px; padding: 11px 14px; border: 2px solid #d3dde6; border-radius: 8px; font-size: 1rem; outline: none; }
+        .input-row input[type="text"]:focus { border-color: #1b6ca8; }
+        .input-row select { padding: 11px 10px; border: 2px solid #d3dde6; border-radius: 8px; background: #fff; cursor: pointer; }
+        .btn { padding: 10px 18px; border: none; border-radius: 8px; font-size: 0.95rem; cursor: pointer; font-weight: 600; transition: transform 0.15s, box-shadow 0.15s; }
+        .btn:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: #1b6ca8; color: #fff; }
+        .btn-primary:hover { background: #145a8c; }
+        .btn-danger { background: #dc3545; color: #fff; }
+        .btn-ghost { background: transparent; color: #1b6ca8; border: 2px solid #1b6ca8; }
+        .btn-small { padding: 6px 10px; font-size: 0.8rem; border-radius: 6px; }
+
+        .toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+        .search { flex: 1; min-width: 140px; padding: 8px 12px; border: 2px solid #d3dde6; border-radius: 20px; outline: none; font-size: 0.9rem; }
+        .search:focus { border-color: #1b6ca8; }
+
+        .cat-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+        .chip { padding: 6px 14px; border-radius: 20px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; }
+        .chip.active, .chip:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+        .list { list-style: none; }
+        .item { display: flex; align-items: center; gap: 10px; background: #fff; padding: 12px 14px; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-right: 4px solid #ccc; transition: all 0.25s; animation: slideIn 0.25s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+        .item.checked { opacity: 0.6; }
+        .item.checked .item-text { text-decoration: line-through; color: #888; }
+        .item input[type="checkbox"] { width: 20px; height: 20px; accent-color: #28a745; cursor: pointer; flex-shrink: 0; }
+        .item-text { flex: 1; font-size: 1rem; word-break: break-word; }
+        .cat-tag { font-size: 0.68rem; font-weight: 700; color: #666; background: #f0f2f5; border-radius: 10px; padding: 2px 8px; white-space: nowrap; }
+        .item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+        .item-actions button { padding: 5px 9px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 600; }
+        .btn-edit { background: #fff3cd; color: #856404; }
+        .btn-del { background: #fdecea; color: #b02a37; }
+        .btn-edit:hover { background: #ffe69b; }
+        .btn-del:hover { background: #f8d7da; }
+
+        .empty { text-align: center; color: #888; padding: 26px; font-size: 1rem; }
+
+        .quote { text-align: center; font-size: 0.9rem; color: #fff; margin-top: 14px; font-style: italic; }
+
+        .toast { position: fixed; bottom: 22px; right: 50%; transform: translateX(50%) translateY(100px); background: #203a43; color: #fff; padding: 12px 22px; border-radius: 10px; opacity: 0; transition: all 0.35s; z-index: 99; font-size: 0.95rem; box-shadow: 0 4px 18px rgba(0,0,0,0.3); }
+        .toast.show { opacity: 1; transform: translateX(50%) translateY(0); }
+
+        @media (max-width: 520px) { .input-row input[type="text"] { min-width: 100%; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏖️ قائمة رحلة اللاذقية</h1>
+        <div class="subtitle">جهّز شنطتك وخلينا نروح! 🎒</div>
+
+        <div class="progress-wrap">
+            <div class="progress-top"><span>التقدم</span><span id="progressLabel">0/0</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <div class="card">
+            <div class="input-row">
+                <input type="text" id="itemInput" placeholder="اكتب عنصر جديد..." onkeydown="if(event.key==='Enter')addItem()">
+                <select id="catSelect">
+                    <option value="عام">عام</option>
+                    <option value="ملابس">ملابس</option>
+                    <option value="مستندات">مستندات</option>
+                    <option value="إلكترونيات">إلكترونيات</option>
+                    <option value="أغراض شخصية">أغراض شخصية</option>
+                </select>
+                <button class="btn btn-primary" onclick="addItem()">+ إضافة</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="toolbar">
+                <input type="text" class="search" id="searchInput" placeholder="🔍 بحث..." oninput="render()">
+                <button class="btn btn-small btn-ghost" id="editModeBtn" onclick="toggleEditMode()">تعديل دفعة</button>
+                <button class="btn btn-small btn-ghost" onclick="exportData()">تصدير</button>
+                <button class="btn btn-small btn-ghost" onclick="importData()">استيراد</button>
+                <button class="btn btn-small btn-danger" onclick="clearDone()">مسح المكتمل</button>
+            </div>
+
+            <div class="cat-filter" id="catFilter">
+                <button class="chip active" data-cat="all" onclick="setCatFilter('all', this)" style="background:#1b6ca8;color:#fff;">الكل</button>
+            </div>
+
+            <ul class="list" id="list"></ul>
+            <div class="empty" id="emptyBox">لا يوجد عناصر بعد — أضف أول عنصر! 🎒</div>
+        </div>
+
+        <div class="quote" id="quote"></div>
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+        const COLORS = { 'عام': '#6c757d', 'ملابس': '#e83e8c', 'مستندات': '#fd7e14', 'إلكترونيات': '#007bff', 'أغراض شخصية': '#28a745' };
+        const QUOTES = ['بحر بخير، ونيّة بخير 🌊', 'الرحلة تبدأ هنا! 🚗', 'جايين عاللاذقية 🏖️', 'الشنطة الجاهزة نصف الرحلة 🎒'];
+
+        let items = JSON.parse(localStorage.getItem('latItems_v2') || '[]');
+        let catFilter = 'all';
+        let editMode = false;
+
+        function save() { localStorage.setItem('latItems_v2', JSON.stringify(items)); }
+
+        function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function buildCatChips() {
+            const cats = [...new Set(items.map(i => i.cat))];
+            const wrap = document.getElementById('catFilter');
+            wrap.innerHTML = `<button class="chip active" data-cat="all" onclick="setCatFilter('all', this)" style="background:#1b6ca8;color:#fff;">الكل</button>` +
+                cats.map(c => `<button class="chip" data-cat="${c}" onclick="setCatFilter('${c}', this)" style="background:${COLORS[c]||'#888'};color:#fff;">${esc(c)}</button>`).join('');
+            if (catFilter !== 'all' && !cats.includes(catFilter)) catFilter = 'all';
+            document.querySelectorAll('.chip').forEach(ch => { if (ch.dataset.cat === catFilter) ch.classList.add('active'); });
+        }
+
+        function render() {
+            const search = document.getElementById('searchInput').value.trim().toLowerCase();
+            buildCatChips();
+            const list = document.getElementById('list');
+            const empty = document.getElementById('emptyBox');
+            const filtered = items.filter(i =>
+                (catFilter === 'all' || i.cat === catFilter) &&
+                (!search || i.text.toLowerCase().includes(search))
+            );
+
+            if (!filtered.length) {
+                empty.style.display = 'block';
+                list.innerHTML = '';
+            } else {
+                empty.style.display = 'none';
+                const sorted = [...filtered].sort((a, b) => a.done - b.done);
+                list.innerHTML = sorted.map(item => {
+                    const idx = items.indexOf(item);
+                    return `<li class="item ${item.done ? 'checked' : ''}" style="border-right-color:${COLORS[item.cat]||'#ccc'}">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggle(${idx})">
+                        ${editMode ? `<input type="text" class="edit-inline" value="${esc(item.text)}" onchange="updateInline(${idx}, this.value)" style="flex:1;padding:6px 10px;border:2px solid #d3dde6;border-radius:6px;font-size:0.95rem;">`
+                                  : `<span class="item-text">${esc(item.text)}</span>`}
+                        <span class="cat-tag">${esc(item.cat)}</span>
+                        <div class="item-actions">
+                            <button class="btn-edit" onclick="editItem(${idx})">✏️ تعديل</button>
+                            <button class="btn-del" onclick="delItem(${idx})">🗑️ حذف</button>
+                        </div>
+                    </li>`;
+                }).join('');
+            }
+
+            const done = items.filter(i => i.done).length;
+            const pct = items.length ? Math.round(done / items.length * 100) : 0;
+            document.getElementById('progressLabel').textContent = items.length ? `${done}/${items.length}` : '0/0';
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('quote').textContent = done === items.length && items.length > 0 ? 'ممتاز! الشنطة جاهزة 🎉' : '';
+        }
+
+        function addItem() {
+            const inp = document.getElementById('itemInput');
+            const text = inp.value.trim();
+            if (!text) { inp.focus(); return; }
+            const cat = document.getElementById('catSelect').value;
+            items.push({ text, cat, done: false });
+            inp.value = '';
+            inp.focus();
+            save(); render();
+            toast('تمت الإضافة ✓');
+        }
+
+        function toggle(i) { items[i].done = !items[i].done; save(); render(); }
+
+        function delItem(i) {
+            if (confirm(`حذف "${items[i].text}"؟`)) {
+                items.splice(i, 1);
+                save(); render();
+                toast('تم الحذف 🗑️');
+            }
+        }
+
+        function editItem(i) {
+            const newText = prompt('عدّل العنصر:', items[i].text);
+            if (newText !== null && newText.trim()) {
+                items[i].text = newText.trim();
+                save(); render();
+                toast('تم التعديل ✓');
+            }
+        }
+
+        function updateInline(i, val) {
+            if (val.trim()) { items[i].text = val.trim(); save(); render(); }
+        }
+
+        function setCatFilter(c, el) {
+            catFilter = c;
+            document.querySelectorAll('.chip').forEach(ch => ch.classList.remove('active'));
+            el.classList.add('active');
+            render();
+        }
+
+        function toggleEditMode() {
+            editMode = !editMode;
+            document.getElementById('editModeBtn').classList.toggle('btn-primary', editMode);
+            document.getElementById('editModeBtn').classList.toggle('btn-ghost', !editMode);
+            document.getElementById('editModeBtn').textContent = editMode ? 'إنهاء تعديل دفعة' : 'تعديل دفعة';
+            render();
+        }
+
+        function clearDone() {
+            const n = items.filter(i => i.done).length;
+            if (!n) { toast('لا يوجد مكتمل لمسحه'); return; }
+            if (confirm(`مسح ${n} عنصر مكتمل؟`)) {
+                items = items.filter(i => !i.done);
+                save(); render();
+                toast('تم المسح ✓');
+            }
+        }
+
+        function exportData() {
+            const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'lattakia-list.json';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            toast('تم التصدير 📁');
+        }
+
+        function importData() {
+            const inp = document.createElement('input');
+            inp.type = 'file';
+            inp.accept = 'application/json';
+            inp.onchange = e => {
+                const f = e.target.files[0];
+                if (!f) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    try {
+                        const data = JSON.parse(reader.result);
+                        if (!Array.isArray(data)) throw new Error('bad');
+                        items = data.map(i => ({ text: String(i.text || ''), cat: i.cat || 'عام', done: !!i.done })).filter(i => i.text);
+                        save(); render();
+                        toast('تم الاستيراد ✓');
+                    } catch (err) { toast('ملف غير صالح!'); }
+                };
+                reader.readAsText(f);
+            };
+            inp.click();
+        }
+
+        render();
+    </script>
+</body>
+</html>
